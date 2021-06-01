@@ -19,30 +19,7 @@ public class Rabbit extends Animal {
     // Food level of a rabbit
     private static final int RABBIT_FOOD_VALUE = 9;
 
-    /**
-     * Create a new rabbit. A rabbit may be created with age zero (a new born)
-     * or with a random age.
-     *
-     * @param randomAge If true, the rabbit will have a random age.
-     * @param field     The field currently occupied.
-     * @param location  The location within the field.
-     */
-    public Rabbit(boolean randomAge, Field field, Location location) {
-        age = 0;
-        setAlive(true);
-        this.field = field;
-        setLocation(location);
-        if (randomAge) {
-            age = RANDOM.nextInt(MAX_AGE);
-        }
-    }
 
-    /**
-     * This is what the rabbit does most of the time - it runs around. Sometimes
-     * it will breed or die of old age.
-     *
-     * @param newAnimals A list to return newly born rabbits.
-     */
 
     @Override
     protected double getBreedingProbability() {
@@ -55,19 +32,8 @@ public class Rabbit extends Animal {
     }
 
     @Override
-    public void act(List<Animal> newAnimals) {
-        incrementAge();
-        if (isAlive()) {
-            giveBirth(newAnimals);
-            // Try to move into a free location.
-            Location newLocation = field.freeAdjacentLocation(location);
-            if (newLocation != null) {
-                setLocation(newLocation);
-            } else {
-                // Overcrowding.
-                setDead();
-            }
-        }
+    public Location move(){
+        return field.freeAdjacentLocation(location);
     }
 
     @Override
@@ -80,10 +46,6 @@ public class Rabbit extends Animal {
         return BREEDING_AGE;
     }
 
-    @Override
-    protected Animal createYoung(boolean randomAge, Field field, Location location) {
-        return new Rabbit(randomAge, field, location);
-    }
 
     public int getRabbitFoodValue() {
         return RABBIT_FOOD_VALUE;

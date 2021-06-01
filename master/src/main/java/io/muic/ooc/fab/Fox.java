@@ -23,55 +23,25 @@ public class Fox extends Animal {
     // The fox's food level, which is increased by eating rabbits.
     private int foodLevel;
 
-    /**
-     * Create a fox. A fox can be created as a new born (age zero and not
-     * hungry) or with a random age and food level.
-     *
-     * @param randomAge If true, the fox will have random age and hunger level.
-     * @param field The field currently occupied.
-     * @param location The location within the field.
-     */
-    public Fox(boolean randomAge, Field field, Location location) {
-        age = 0;
-        setAlive(true);
-        this.field = field;
-        setLocation(location);
-        if (randomAge) {
-            age = RANDOM.nextInt(MAX_AGE);
-            foodLevel = 9;
-        } else {
-            // leave age at 0
-            foodLevel = 9;
-        }
+
+    @Override
+    public void initialize(boolean randomAge, Field field, Location location) {
+        super.initialize(randomAge,field, location);
+        this.foodLevel = RANDOM.nextInt(9);
     }
 
-    /**
-     * This is what the fox does most of the time: it hunts for rabbits. In the
-     * process, it might breed, die of hunger, or die of old age.
-     *
-     * @param field The field currently occupied.
-     * @param newAnimals A list to return newly born foxes.
-     */
     @Override
-    public void act(List<Animal> newAnimals) {
-        incrementAge();
+    public void act(List<Actor> newAnimals) {
         incrementHunger();
-        if (isAlive()) {
-            giveBirth(newAnimals);
-            // Move towards a source of food if found.
-            Location newLocation = findFood();
-            if (newLocation == null) {
-                // No food found - try to move to a free location.
-                newLocation = field.freeAdjacentLocation(location);
-            }
-            // See if it was possible to move.
-            if (newLocation != null) {
-                setLocation(newLocation);
-            } else {
-                // Overcrowding.
-                setDead();
-            }
+        super.act(newAnimals);
+    }
+
+    public Location move(){
+        Location newLocation = kill();
+        if (newLocation == null) {
+            newLocation = field.freeAdjacentLocation(location);
         }
+        return newLocation;
     }
 
     /**
@@ -90,7 +60,7 @@ public class Fox extends Animal {
      *
      * @return Where food was found, or null if it wasn't.
      */
-    private Location findFood() {
+    public Location kill() {
         List<Location> adjacent = field.adjacentLocations(location);
         Iterator<Location> it = adjacent.iterator();
         while (it.hasNext()) {
@@ -123,15 +93,13 @@ public class Fox extends Animal {
         return MAX_LITTER_SIZE;
     }
 
+
     @Override
     protected int getBreedingAge() {
         return BREEDING_AGE;
     }
 
-    @Override
-    protected Animal createYoung(boolean randomAge, Field field, Location location) {
-        return new Fox(randomAge, field, location);
-    }
+
     public int getFoxFoodValue(){
         return FOX_FOOD_VALUE;
     }

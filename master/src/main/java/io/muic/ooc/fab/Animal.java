@@ -3,15 +3,10 @@ package io.muic.ooc.fab;
 import java.util.List;
 import java.util.Random;
 
-public abstract class Animal {
+public abstract class Animal extends Actor{
     // Whether the animal is alive or not.
     private boolean alive;
 
-    // The fox's position.
-    protected Location location;
-    // The field occupied.
-    protected Field field;
-    // Individual characteristics (instance fields).
     // The fox's age.
     protected int age;
 
@@ -23,13 +18,6 @@ public abstract class Animal {
      *
      * @return true if the animal is still alive.
      */
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
 
     /**
      * Return the fox's location.
@@ -53,10 +41,6 @@ public abstract class Animal {
         }
     }
 
-
-    /**
-     * Indicate that the fox is no longer alive. It is removed from the field.
-     */
     protected void setDead() {
         setAlive(false);
         if (location != null) {
@@ -66,18 +50,6 @@ public abstract class Animal {
         }
     }
 
-    /**
-     * Place the rabbit at the new location in the given field.
-     *
-     * @param newLocation The rabbit's new location.
-     */
-    protected void setLocation(Location newLocation) {
-        if (location != null) {
-            field.clear(location);
-        }
-        location = newLocation;
-        field.place(this, newLocation);
-    }
 
     /**
      * Generate a number representing the number of births, if it can breed.
@@ -105,27 +77,45 @@ public abstract class Animal {
         return age >= getBreedingAge();
     }
 
-    protected abstract void act(List<Animal> animals);
+
 
     protected abstract int getBreedingAge();
 
-    protected abstract Animal createYoung(boolean randomAge, Field field, Location location);
+    protected Actor createYoung(boolean randomAge, Field field, Location location) {
+        return ActorFactory.createActor(getClass(), field, location);
+    }
+
+    @Override
+    public void act(List<Actor> newActors) {
+        incrementAge();
+        if (isAlive()) {
+            giveBirth(newActors);
+            Location newLocation = move();
+            if (newLocation != null) {
+                setLocation(newLocation);
+            } else {
+                // Overcrowding.
+                setDead();
+            }
+        }
+    }
+
 
     /**
      * Check whether or not this rabbit is to give birth at this step. New
      * births will be made into free adjacent locations.
      *
-     * @param newRabbits A list to return newly born rabbits.
+     * @param newAnimals A list to return newly born animals.
      */
-    protected void giveBirth(List newRabbits) {
+    protected void giveBirth(List newAnimals) {
         // New rabbits are born into adjacent locations.
         // Get a list of adjacent free locations.
         List<Location> free = field.getFreeAdjacentLocations(location);
         int births = breed();
         for (int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
-            Animal young = createYoung(false, field, loc);
-            newRabbits.add(young);
+            Actor young = createYoung(false, field, loc);
+            newAnimals.add(young);
         }
     }
 

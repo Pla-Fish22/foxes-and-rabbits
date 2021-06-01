@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class Tiger extends Animal{
 
-    private static final int BREEDING_AGE = 30;
+    private static final int BREEDING_AGE = 35;
 
     private static final int MAX_AGE = 120;
 
@@ -18,19 +18,10 @@ public class Tiger extends Animal{
 
     private int foodLevel;
 
-
-    public Tiger(boolean randomAge, Field field, Location location) {
-        age = 0;
-        setAlive(true);
-        this.field = field;
-        setLocation(location);
-        if (randomAge) {
-            age = RANDOM.nextInt(MAX_AGE);
-            foodLevel = 9;
-        } else {
-            // leave age at 0
-            foodLevel = 9;
-        }
+    @Override
+    public void initialize(boolean randomAge, Field field, Location location) {
+        super.initialize(randomAge,field, location);
+        this.foodLevel = RANDOM.nextInt(9) + RANDOM.nextInt(13);
     }
 
 
@@ -51,29 +42,22 @@ public class Tiger extends Animal{
     }
 
     @Override
-    protected void act(List<Animal> newAnimals) {
-        incrementAge();
+    public void act(List<Actor> newAnimals) {
         incrementHunger();
-        if (isAlive()) {
-            giveBirth(newAnimals);
-            // Move towards a source of food if found.
-            Location newLocation = findFood();
-            if (newLocation == null) {
-                // No food found - try to move to a free location.
-                newLocation = field.freeAdjacentLocation(location);
-            }
-            // See if it was possible to move.
-            if (newLocation != null) {
-                setLocation(newLocation);
-            } else {
-                // Overcrowding.
-                setDead();
-            }
-        }
-
+        super.act(newAnimals);
     }
 
-    private Location findFood() {
+    @Override
+    public Location move(){
+        Location newLocation = kill();
+        if (newLocation == null) {
+            newLocation = field.freeAdjacentLocation(location);
+        }
+        return newLocation;
+    }
+
+
+    public Location kill() {
         List<Location> adjacent = field.adjacentLocations(location);
         Iterator<Location> it = adjacent.iterator();
         while (it.hasNext()) {
@@ -110,8 +94,4 @@ public class Tiger extends Animal{
         return BREEDING_AGE;
     }
 
-    @Override
-    protected Animal createYoung(boolean randomAge, Field field, Location location) {
-        return new Tiger(randomAge, field, location);
-    }
 }
