@@ -16,14 +16,16 @@ public class Rabbit extends Animal {
     private static final int MAX_LITTER_SIZE = 4;
     // A shared random number generator to control breeding.
     private static final Random RANDOM = new Random();
+    // Food level of a rabbit
+    private static final int RABBIT_FOOD_VALUE = 9;
 
     /**
      * Create a new rabbit. A rabbit may be created with age zero (a new born)
      * or with a random age.
      *
      * @param randomAge If true, the rabbit will have a random age.
-     * @param field The field currently occupied.
-     * @param location The location within the field.
+     * @param field     The field currently occupied.
+     * @param location  The location within the field.
      */
     public Rabbit(boolean randomAge, Field field, Location location) {
         age = 0;
@@ -82,4 +84,9 @@ public class Rabbit extends Animal {
     protected Animal createYoung(boolean randomAge, Field field, Location location) {
         return new Rabbit(randomAge, field, location);
     }
+
+    public int getRabbitFoodValue() {
+        return RABBIT_FOOD_VALUE;
+    }
 }
+

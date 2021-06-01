@@ -15,9 +15,8 @@ public class Fox extends Animal {
     private static final double BREEDING_PROBABILITY = 0.08;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 2;
-    // The food value of a single rabbit. In effect, this is the
-    // number of steps a fox can go before it has to eat again.
-    private static final int RABBIT_FOOD_VALUE = 9;
+    // Food value os a foc
+    private static final int FOX_FOOD_VALUE = 13;
     // Random generator
     private static final Random RANDOM = new Random();
 
@@ -39,10 +38,10 @@ public class Fox extends Animal {
         setLocation(location);
         if (randomAge) {
             age = RANDOM.nextInt(MAX_AGE);
-            foodLevel = RANDOM.nextInt(RABBIT_FOOD_VALUE);
+            foodLevel = 9;
         } else {
             // leave age at 0
-            foodLevel = RANDOM.nextInt(RABBIT_FOOD_VALUE);
+            foodLevel = 9;
         }
     }
 
@@ -101,7 +100,7 @@ public class Fox extends Animal {
                 Rabbit rabbit = (Rabbit) animal;
                 if (rabbit.isAlive()) {
                     rabbit.setDead();
-                    foodLevel = RABBIT_FOOD_VALUE;
+                    foodLevel = rabbit.getRabbitFoodValue();
                     return where;
                 }
             }
@@ -132,5 +131,8 @@ public class Fox extends Animal {
     @Override
     protected Animal createYoung(boolean randomAge, Field field, Location location) {
         return new Fox(randomAge, field, location);
+    }
+    public int getFoxFoodValue(){
+        return FOX_FOOD_VALUE;
     }
 }
