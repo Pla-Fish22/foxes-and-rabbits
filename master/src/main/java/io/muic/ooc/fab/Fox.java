@@ -44,9 +44,6 @@ public class Fox extends Animal {
         return newLocation;
     }
 
-    /**
-     * Make this fox more hungry. This could result in the fox's death.
-     */
     private void incrementHunger() {
         foodLevel--;
         if (foodLevel <= 0) {
@@ -54,23 +51,17 @@ public class Fox extends Animal {
         }
     }
 
-    /**
-     * Look for rabbits adjacent to the current location. Only the first live
-     * rabbit is eaten.
-     *
-     * @return Where food was found, or null if it wasn't.
-     */
     public Location kill() {
         List<Location> adjacent = field.adjacentLocations(location);
         Iterator<Location> it = adjacent.iterator();
         while (it.hasNext()) {
             Location where = it.next();
-            Object animal = field.getObjectAt(where);
-            if (animal instanceof Rabbit) {
-                Rabbit rabbit = (Rabbit) animal;
-                if (rabbit.isAlive()) {
-                    rabbit.setDead();
-                    foodLevel = rabbit.getRabbitFoodValue();
+            Object livingThing = field.getObjectAt(where);
+            if (livingThing instanceof Rabbit) {
+                Animal animal = (Animal) livingThing;
+                if (animal.isAlive()) {
+                    animal.setDead();
+                    foodLevel = animal.getFoodValue();
                     return where;
                 }
             }
@@ -99,8 +90,8 @@ public class Fox extends Animal {
         return BREEDING_AGE;
     }
 
-
-    public int getFoxFoodValue(){
+    @Override
+    public int getFoodValue(){
         return FOX_FOOD_VALUE;
     }
 }

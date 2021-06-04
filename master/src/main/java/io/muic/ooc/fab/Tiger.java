@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Tiger extends Animal{
+public class Tiger extends Animal {
 
     private static final int BREEDING_AGE = 35;
 
@@ -20,10 +20,9 @@ public class Tiger extends Animal{
 
     @Override
     public void initialize(boolean randomAge, Field field, Location location) {
-        super.initialize(randomAge,field, location);
+        super.initialize(randomAge, field, location);
         this.foodLevel = RANDOM.nextInt(9) + RANDOM.nextInt(13);
     }
-
 
 
     @Override
@@ -48,7 +47,12 @@ public class Tiger extends Animal{
     }
 
     @Override
-    public Location move(){
+    protected int getFoodValue() {
+        return 0;
+    }
+
+    @Override
+    public Location move() {
         Location newLocation = kill();
         if (newLocation == null) {
             newLocation = field.freeAdjacentLocation(location);
@@ -62,19 +66,13 @@ public class Tiger extends Animal{
         Iterator<Location> it = adjacent.iterator();
         while (it.hasNext()) {
             Location where = it.next();
-            Object animal = field.getObjectAt(where);
-            if (animal instanceof Rabbit) {
-                Rabbit rabbit = (Rabbit) animal;
-                if (rabbit.isAlive()) {
-                    rabbit.setDead();
-                    foodLevel = rabbit.getRabbitFoodValue();
-                    return where;
-                }
-            } else if (animal instanceof Fox) {
-                Fox fox = (Fox) animal;
-                if (fox.isAlive()) {
-                    fox.setDead();
-                    foodLevel = fox.getFoxFoodValue();
+            Object livingThing = field.getObjectAt(where);
+            if (livingThing instanceof Rabbit || livingThing instanceof Fox) {
+
+                Animal animal = (Animal) livingThing;
+                if (animal.isAlive()) {
+                    animal.setDead();
+                    foodLevel = animal.getFoodValue();
                     return where;
                 }
             }

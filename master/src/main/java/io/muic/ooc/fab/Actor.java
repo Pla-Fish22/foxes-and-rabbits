@@ -18,6 +18,7 @@ public abstract class Actor {
     public abstract Location move();
 
     public void initialize(boolean randomAge, Field field, Location location){
+        this.randomAge = randomAge;
         this.field = field;
         setLocation(location);
         setAlive(true);

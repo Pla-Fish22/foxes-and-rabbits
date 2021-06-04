@@ -1,6 +1,5 @@
 package io.muic.ooc.fab;
 
-import java.util.List;
 import java.util.Random;
 
 public class Rabbit extends Animal {
@@ -18,8 +17,6 @@ public class Rabbit extends Animal {
     private static final Random RANDOM = new Random();
     // Food level of a rabbit
     private static final int RABBIT_FOOD_VALUE = 9;
-
-
 
     @Override
     protected double getBreedingProbability() {
@@ -46,8 +43,8 @@ public class Rabbit extends Animal {
         return BREEDING_AGE;
     }
 
-
-    public int getRabbitFoodValue() {
+    @Override
+    public int getFoodValue() {
         return RABBIT_FOOD_VALUE;
     }
 }

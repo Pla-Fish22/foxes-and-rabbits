@@ -6,8 +6,6 @@ import java.util.Random;
 
 public class Hunter extends Actor{
 
-    private static final Random RANDOM = new Random();
-
     public Location kill() {
         List<Location> adjacent = field.adjacentLocations(location);
         Iterator<Location> it = adjacent.iterator();
