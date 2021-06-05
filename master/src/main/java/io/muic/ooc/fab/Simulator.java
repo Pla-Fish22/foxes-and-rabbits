@@ -1,15 +1,16 @@
 package io.muic.ooc.fab;
 
 
+import io.muic.ooc.fab.observe.Observable;
+import io.muic.ooc.fab.observe.SimulateViewObserver;
 import io.muic.ooc.fab.view.SimulatorView;
 
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.awt.Color;
 
-public class Simulator {
+public class Simulator extends Observable {
 
     // Constants representing configuration information for the simulation.
     // The default width for the grid.
@@ -25,10 +26,6 @@ public class Simulator {
     private int step;
     // A graphical view of the simulation.
     private SimulatorView view;
-    // Random generator
-    private static final Random RANDOM = new Random();
-    // Lists of Hunters in the field.
-    private List<Hunter> hunters;
 
     /**
      * Construct a simulation field with default size.
@@ -56,6 +53,8 @@ public class Simulator {
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
+        SimulateViewObserver simulateViewObserver = new SimulateViewObserver(view);
+        addObserver(simulateViewObserver);
         ActorType[] actorTypes = ActorType.values();
         for (int i = 0; i < actorTypes.length; i++) {
             view.setColor(actorTypes[i].getActorClass(), actorTypes[i].getColor());
@@ -108,7 +107,7 @@ public class Simulator {
         // Add the newly born foxes and rabbits to the main lists.
         actors.addAll(newActors);
 
-        view.showStatus(step, field);
+        notifyAll(step, field);
     }
 
     /**
@@ -120,7 +119,7 @@ public class Simulator {
         new FieldPopulator().populate(field, actors);
 
         // Show the starting state in the view.
-        view.showStatus(step, field);
+        notifyAll(step, field);
     }
 
     /**

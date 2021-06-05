@@ -1,5 +1,10 @@
 package io.muic.ooc.fab;
 
+import io.muic.ooc.fab.Fox;
+import io.muic.ooc.fab.Hunter;
+import io.muic.ooc.fab.Rabbit;
+import io.muic.ooc.fab.Tiger;
+
 import java.awt.*;
 
 public enum ActorType {
